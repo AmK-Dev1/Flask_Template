@@ -8,7 +8,7 @@ class User(db.Model):
     
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    
+    fullname  = db.Column(db.String(50), unique=True, nullable=False)
     
     def to_dict(self):
         return {"id": self.id, "username": self.username, "email": self.email}
