@@ -53,6 +53,27 @@
 						"url": "http://localhost:5000/users"
 					},
 					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"anis@gmail.com\",\r\n    \"password\" : \"anis\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/login"
+					},
+					"response": []
 				}
 			]
 		}
