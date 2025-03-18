@@ -49,3 +49,14 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return jsonify({"message": "User deleted"}), 200
+
+@api_bp.route('/login',methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data["email"]).first()
+    realPassword = user.password
+    requestpassword = data['password']
+    if requestpassword == realPassword :
+        return jsonify({"message": "Login Succssefuly"}), 200
+    else:
+        return jsonify({"message": "wrong password"}), 401
