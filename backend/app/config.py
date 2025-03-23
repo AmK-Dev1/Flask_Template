@@ -9,3 +9,8 @@ class Config:
 
     # Other configuration variables can be added here
     SECRET_KEY = 'your-secret-key'
+
+
+    # MAILER CONFIG
+    EMAIL = 'example.com'
+    MAILERAPPPASSWORD = 'yikbylkylwanbdwx'

@@ -1,7 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app 
 from . import db
 from .models import User
-
+from .utils import generate_confirmation_code
 api_bp = Blueprint('api', __name__)
 
 # GET /api/users - Retrieve all users
@@ -19,15 +19,44 @@ def get_user(user_id):
 # POST /api/users - Create a new user
 @api_bp.route('/users', methods=['POST'])
 def create_user():
-    data = request.get_json()
-    if not data or 'username' not in data or 'email' not in data or 'password' not in data:
-        return jsonify({"error": "Missing informations"}), 400
+    userData = request.get_json()
 
-    new_user = User(username=data['username'], email=data['email'], password=data['password'])
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify('user has been created'), 201
+    if User.ValidateUserData(userData):
+        confirmationCode = generate_confirmation_code()
+        new_user = User(userName=userData['userName'],
+                        email=userData['email'],
+                        password=userData['password'],
+                        confirmationCode = confirmationCode)
+        db.session.add(new_user)
+        db.session.commit()
 
+        #Send Confirmation code to User
+        # Access the mailer from the Flask app context
+        mailer = current_app.mailer
+        #use it here 
+        mailer.send_email(to=userData['email'], subject="Confirmation Code", body=f"Confiramtion Code is {confirmationCode}")
+        
+        return jsonify('user has been created'), 201
+    else:
+        return jsonify('Missing Information'), 401
+    
+
+# POST /api/users - Create a new user
+@api_bp.route('/users/confirm', methods=['POST'])
+def confirm_user():
+    ConfirmationData = request.get_json()
+    if ('email' in ConfirmationData and 'code' in ConfirmationData):
+        #do something 0..
+        user = User.query.filter_by(email=ConfirmationData['email']).first()
+        if user.confirmationCode == ConfirmationData['code']:
+            # update is confirmed
+            user.isConfirmed = 1
+            db.session.commit()
+            return jsonify("User has been Confirmed thank you !")
+        else : 
+            return jsonify("Provided Code is not correct please check your email")
+
+        
 # PUT /api/users/<user_id> - Update an existing user
 @api_bp.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):

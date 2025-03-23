@@ -1,22 +1,19 @@
 from flask_mail import Mail, Message
-from flask import Flask  # Import Flask
 
 class SMTPMailer:
-    def __init__(self, app=None):
-        """Initialize mailer with a Flask app."""
+    def __init__(self):
+        """Initialize mailer without an app."""
         self.mail = None
-        if app:
-            self.init_app(app)
 
     def init_app(self, app):
-        """Configure and initialize Flask-Mail."""
+        """Configure and initialize Flask-Mail with the existing Flask app."""
         app.config['MAIL_SERVER'] = 'smtp.gmail.com'
         app.config['MAIL_PORT'] = 587
         app.config['MAIL_USE_TLS'] = True
         app.config['MAIL_USE_SSL'] = False
         app.config['MAIL_USERNAME'] = 'email'
-        app.config['MAIL_PASSWORD'] = 'password'  # Use an App Password, NOT your Gmail password!
-        app.config['MAIL_DEFAULT_SENDER'] = NULL
+        app.config['MAIL_PASSWORD'] = 'key'  # Use App Password, NOT Gmail password
+        app.config['MAIL_DEFAULT_SENDER'] = 'optiflow.dz@gmail.com'  # FIXED!
 
         self.mail = Mail(app)
 
@@ -28,4 +25,3 @@ class SMTPMailer:
         msg = Message(subject, recipients=[to], body=body)
         self.mail.send(msg)
         return "Email sent successfully!"
-
