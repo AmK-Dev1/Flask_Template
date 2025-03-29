@@ -36,9 +36,16 @@ def create_user():
         #use it here 
         mailer.send_email(to=userData['email'], subject="Confirmation Code", body=f"Confiramtion Code is {confirmationCode}")
         
-        return jsonify('user has been created'), 201
+        user = User.query.filter_by(email=userData['email']).first()
+        return jsonify({
+            'status' : 200,
+            'user': user.to_dict(),
+        })
     else:
-        return jsonify('Missing Information'), 401
+        return jsonify({
+            'status' : 401,
+            'error': "Invalid Informations" ,
+        })
     
 
 # POST /api/users - Create a new user
@@ -86,6 +93,12 @@ def login():
     realPassword = user.password
     requestpassword = data['password']
     if requestpassword == realPassword :
-        return jsonify({"message": "Login Succssefuly"}), 200
+        return jsonify({
+            'status' : 200,
+            'user': user.to_dict(),
+        })
     else:
-        return jsonify({"message": "wrong password"}), 401
+        return jsonify({
+            'status' : 401,
+            'error': "Invalid Informations" ,
+        })

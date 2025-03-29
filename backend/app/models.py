@@ -4,11 +4,11 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     fullName  = db.Column(db.String(50), unique=False, nullable=True)
-    userName = db.Column(db.String(50), unique=False, nullable=False) # REQUIRED
+    userName = db.Column(db.String(50), unique=True, nullable=False) # REQUIRED
     age = db.Column(db.Integer, unique=False, nullable=True)
     
     # contact infos
-    email = db.Column(db.String(100), unique=False, nullable=False)# REQUIRED
+    email = db.Column(db.String(100), unique=True, nullable=False)# REQUIRED
     phone = db.Column(db.String(100), unique=False, nullable=True)
     password = db.Column(db.String(250), nullable=False) # REQUIRED
     adresse = db.Column(db.String(250), nullable=True)
@@ -29,7 +29,6 @@ class User(db.Model):
             "age": self.age,
             "email": self.email,
             "phone": self.phone,
-            "password": self.password,
             "adresse": self.adresse,
             "isConfirmed": self.isConfirmed,
             "confirmationCode": self.confirmationCode,
